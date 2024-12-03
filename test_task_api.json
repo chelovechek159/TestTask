@@ -1,0 +1,977 @@
+{
+	"info": {
+		"_postman_id": "3a2313fe-ac2a-4256-b887-c7623346d203",
+		"name": "Test Task API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25314214"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"username\", \"testUser_\" + Math.floor(Math.random() * 100000));",
+									"pm.environment.set(\"user_password\", \"passwd_\" + Math.random().toString(36).substring(7));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user/create/{{username}}/{{user_password}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								"create",
+								"{{username}}",
+								"{{user_password}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Info by username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.test(\"Проверка валидности схемы ответа\", function () {",
+									"  var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"      \"id\": {",
+									"        \"type\": \"integer\"",
+									"      },",
+									"      \"name\": {",
+									"        \"type\": \"string\"",
+									"      },",
+									"      \"password\": {",
+									"        \"type\": \"string\"",
+									"      }",
+									"    },",
+									"    \"required\": [",
+									"      \"id\",",
+									"      \"name\",",
+									"      \"password\"",
+									"    ]",
+									"  };",
+									"  eval(pm.environment.get(\"validateSchemaFunction\"));",
+									"  validateSchema(response, schema);",
+									"});",
+									"",
+									"var user_id = response.id",
+									"pm.test(\"Id is integer\", () => {",
+									"    pm.expect(user_id).to.be.a('number').and.to.be.above(0);",
+									"});",
+									"pm.environment.set(\"user_id\",user_id)",
+									"",
+									"",
+									"pm.test(\"Name is a non-empty string\", () => {",
+									"  pm.expect(response.name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should not be empty\");",
+									"});",
+									"",
+									"pm.test(\"Password is a non-empty string\", () => {",
+									"    pm.expect(response.password).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should not be empty\");",
+									"})",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user/getinfo/{{username}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								"getinfo",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const new_password = \"new_passwd_\" + Math.random().toString(36).substring(7);",
+									"",
+									"pm.environment.set(\"new_password\", new_password)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user/change-password/{{username}}/{{new_password}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								"change-password",
+								"{{username}}",
+								"{{new_password}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Info and after password update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.test(\"Проверка валидности схемы ответа\", function () {",
+									"  var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"      \"id\": {",
+									"        \"type\": \"integer\"",
+									"      },",
+									"      \"name\": {",
+									"        \"type\": \"string\"",
+									"      },",
+									"      \"password\": {",
+									"        \"type\": \"string\"",
+									"      }",
+									"    },",
+									"    \"required\": [",
+									"      \"id\",",
+									"      \"name\",",
+									"      \"password\"",
+									"    ]",
+									"  };",
+									"  eval(pm.environment.get(\"validateSchemaFunction\"));",
+									"  validateSchema(response, schema);",
+									"});",
+									"",
+									"var user_id = response.id",
+									"pm.test(\"Id is integer\", () => {",
+									"    pm.expect(user_id).to.be.a('number').and.to.be.above(0);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Name is a non-empty string\", () => {",
+									"  pm.expect(response.name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should not be empty\");",
+									"});",
+									"",
+									"pm.test(\"Password is a non-empty string\", () => {",
+									"    pm.expect(response.password).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should not be empty\");",
+									"})",
+									"",
+									"pm.test(\"Password == new_password\", () => {",
+									"    pm.expect(response.password).to.be.eql(pm.environment.get(\"new_password\"))",
+									"}) ",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user/getinfo/{{user_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								"getinfo",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json()",
+									"",
+									"pm.test(\"Response is true\", () =>{",
+									"    pm.expect(response).to.be.true",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user/delete/{{username}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								"delete",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "VM",
+			"item": [
+				{
+					"name": "Create VM",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json()",
+									"var vm_id = Number(response)",
+									"",
+									"pm.environment.set(\"vm_id\", vm_id)",
+									"",
+									"pm.test(\"response id is non-empty\", () => {",
+									"    pm.expect(response).to.be.greaterThan(0, \"Response data should not be empty\");",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var vm_name = \"vm_name_\" + Math.floor(Math.random() * 100000)",
+									"pm.environment.set(\"vm_name\", vm_name)",
+									"",
+									"var vm_password = \"vm_passwd_\" + Math.random().toString(36).substring(7)",
+									"pm.environment.set(\"vm_password\", vm_password)",
+									"",
+									"var owner_id =  Math.floor(Math.random() * 10000)",
+									"pm.environment.set(\"owner_id\", owner_id)",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vm_name\": \"{{vm_name}}\",\n    \"owner_id\": {{owner_id}},\n    \"vm_password\": \"{{vm_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/vm/create/{{vm_name}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"create",
+								"{{vm_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get VM Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.test(\"Проверка валидности схемы ответа\", function () {",
+									"  var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"      \"owner_id\": {",
+									"        \"type\": \"integer\"",
+									"      },",
+									"      \"vm_name\": {",
+									"        \"type\": \"string\"",
+									"      },",
+									"      \"vm_password\": {",
+									"        \"type\": \"string\"",
+									"      }",
+									"    },",
+									"    \"required\": [",
+									"      \"owner_id\",",
+									"      \"vm_name\",",
+									"      \"vm_password\"",
+									"    ]",
+									"  };",
+									"  eval(pm.environment.get(\"validateSchemaFunction\"));",
+									"  validateSchema(response, schema);",
+									"});",
+									"",
+									"var owner_id = response.owner_id",
+									"pm.test(\"owner_Id is integer and == owner_id from 'create_vm'\", () => {",
+									"    pm.expect(owner_id).to.be.a('number').and.to.be.above(0);",
+									"    pm.expect(owner_id).to.be.eql(pm.environment.get(\"owner_id\"))",
+									"});",
+									" ",
+									"",
+									"var vm_name = response.vm_name",
+									"pm.test(\"vm_name is integer and == vm_name from 'create_vm'\", () => {",
+									"    pm.expect(vm_name).to.be.a('string');",
+									"    pm.expect(vm_name).to.be.eql(pm.environment.get(\"vm_name\"))",
+									"});",
+									" ",
+									" var vm_password = response.vm_password",
+									"pm.test(\"vm_password is integer and == vm_password from 'create_vm'\", () => {",
+									"    pm.expect(vm_password).to.be.a('string')",
+									"    pm.expect(vm_password).to.be.eql(pm.environment.get(\"vm_password\"))",
+									"});",
+									" "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/vm/getinfo/{{vm_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"getinfo",
+								"{{vm_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update VM Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json()",
+									"",
+									"pm.test(\"response is true\", () => {",
+									"    pm.expect(response).to.be.true",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var vm_new_name = \"vm_new_name_\" + Math.floor(Math.random() * 100000)",
+									"",
+									"pm.environment.set(\"vm_new_name\", vm_new_name)",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/vm/update/name/{{vm_id}}/{{vm_new_name}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"update",
+								"name",
+								"{{vm_id}}",
+								"{{vm_new_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VM Info after name update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.test(\"Проверка валидности схемы ответа\", function () {",
+									"  var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"      \"owner_id\": {",
+									"        \"type\": \"integer\"",
+									"      },",
+									"      \"vm_name\": {",
+									"        \"type\": \"string\"",
+									"      },",
+									"      \"vm_password\": {",
+									"        \"type\": \"string\"",
+									"      }",
+									"    },",
+									"    \"required\": [",
+									"      \"owner_id\",",
+									"      \"vm_name\",",
+									"      \"vm_password\"",
+									"    ]",
+									"  };",
+									"  eval(pm.environment.get(\"validateSchemaFunction\"));",
+									"  validateSchema(response, schema);",
+									"});",
+									"",
+									"",
+									"var vm_name = response.vm_name",
+									"pm.test(\"vm_name is integer and == vm_new_name from 'update_vm_name'\", () => {",
+									"    pm.expect(vm_name).to.be.a('string');",
+									"    pm.expect(vm_name).to.be.eql(pm.environment.get(\"vm_new_name\"))",
+									"});",
+									" ",
+									" "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/vm/getinfo/{{vm_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"getinfo",
+								"{{vm_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update VM Owner",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var new_owner_id =  Math.floor(Math.random() * 10000)",
+									"pm.environment.set(\"new_owner_id\", new_owner_id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response is boolean', function () {",
+									"    pm.expect(typeof pm.response.json()).to.eql('boolean');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/vm/update/owner/{{vm_id}}/{{new_owner_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"update",
+								"owner",
+								"{{vm_id}}",
+								"{{new_owner_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VM Info after owner update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.test(\"Проверка валидности схемы ответа\", function () {",
+									"  var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"      \"owner_id\": {",
+									"        \"type\": \"integer\"",
+									"      },",
+									"      \"vm_name\": {",
+									"        \"type\": \"string\"",
+									"      },",
+									"      \"vm_password\": {",
+									"        \"type\": \"string\"",
+									"      }",
+									"    },",
+									"    \"required\": [",
+									"      \"owner_id\",",
+									"      \"vm_name\",",
+									"      \"vm_password\"",
+									"    ]",
+									"  };",
+									"  eval(pm.environment.get(\"validateSchemaFunction\"));",
+									"  validateSchema(response, schema);",
+									"});",
+									"",
+									"var owner_id = response.owner_id",
+									"pm.test(\"owner_Id is integer and == new_owner_id from 'update_vm_owner'\", () => {",
+									"    pm.expect(owner_id).to.be.a('number').and.to.be.above(0);",
+									"    pm.expect(owner_id).to.be.eql(pm.environment.get(\"new_owner_id\"))",
+									"});",
+									" "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/vm/getinfo/{{vm_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"getinfo",
+								"{{vm_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update VM Password",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var vm_new_password = \"vm_new_passwd_\" + Math.random().toString(36).substring(7)",
+									"pm.environment.set(\"vm_new_password\", vm_new_password)",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/vm/update/password/{{vm_id}}/{{vm_new_password}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"update",
+								"password",
+								"{{vm_id}}",
+								"{{vm_new_password}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VM Info after password update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.test(\"Проверка валидности схемы ответа\", function () {",
+									"  var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"      \"owner_id\": {",
+									"        \"type\": \"integer\"",
+									"      },",
+									"      \"vm_name\": {",
+									"        \"type\": \"string\"",
+									"      },",
+									"      \"vm_password\": {",
+									"        \"type\": \"string\"",
+									"      }",
+									"    },",
+									"    \"required\": [",
+									"      \"owner_id\",",
+									"      \"vm_name\",",
+									"      \"vm_password\"",
+									"    ]",
+									"  };",
+									"  eval(pm.environment.get(\"validateSchemaFunction\"));",
+									"  validateSchema(response, schema);",
+									"});",
+									"",
+									" ",
+									" var vm_password = response.vm_password",
+									"pm.test(\"vm_password is integer and == vm_new_password from 'update_vm_password'\", () => {",
+									"    pm.expect(vm_password).to.be.a('string')",
+									"    pm.expect(vm_password).to.be.eql(pm.environment.get(\"vm_new_password\"))",
+									"});",
+									" "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/vm/getinfo/{{vm_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"getinfo",
+								"{{vm_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete VM",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/vm/delete/{{vm_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vm",
+								"delete",
+								"{{vm_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{login}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"const response = pm.response.json();",
+					"",
+					"pm.test(\"Статус код ответа равен 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"pm.test(\"Заголовок Content-Type == application/json\", function () {",
+					"    pm.expect(pm.response.headers.get(\"Content-Type\"), \"Response Content-Type header should be 'application/json'\")",
+					"            .to.include(\"application/json\");",
+					"});",
+					"",
+					"// Функция для валидации схемы ответа",
+					"function validateSchema(response, schema){",
+					"        // Инициализируем библиотеку Ajv для валидации схем JSON",
+					"        const Ajv = require('ajv');",
+					"        const ajv = new Ajv();",
+					"",
+					"        // Компилируем схему для последующей проверки",
+					"        const validate = ajv.compile(schema);",
+					"",
+					"        // Выполняем проверку ответа на соответствие схеме",
+					"        const valid = validate(response);",
+					"",
+					"        // Проверяем, что ответ соответствует схеме; если нет, выводим ошибки",
+					"        if (!valid) { ",
+					"            const errorMessages = validate.errors.map(err => {",
+					"                // Получаем путь к ошибочному полю в ответе.",
+					"                // instancePath — путь к значению, не прошедшему валидацию, может быть пустым или неопределённым.",
+					"                // Если instancePath недоступен, используется dataPath, а если и его нет — \"недоступный путь\".",
+					"                const path = err.instancePath || err.dataPath || \"недоступный путь\";",
+					"            ",
+					"                // Извлекаем ожидаемый тип данных для этого поля из параметров ошибки.",
+					"                const expectedType = err.params.type;",
+					"            ",
+					"                // Разбиваем путь на части для поиска значения в ответе.",
+					"                // Пример: путь `.data.trusted` будет преобразован в массив [\"data\", \"trusted\"].",
+					"                const pathSegments = path.split('.').filter(Boolean);",
+					"            ",
+					"                // Начинаем с `response` и последовательно извлекаем вложенные значения по каждому сегменту пути.",
+					"                const actualValue = pathSegments.reduce((obj, key) => obj && obj[key], response);",
+					"            ",
+					"                // Определяем фактический тип значения",
+					"                const actualType = actualValue === null ? \"null\" : typeof actualValue;",
+					"",
+					"                // Возвращаем Возвращаем строку с сообщением об ошибке",
+					"                return `${path} - should be ${expectedType}, but ${actualType}`;",
+					"        });",
+					"",
+					"        pm.expect.fail(`Ошибка:\\n${errorMessages.join('\\n')}`);",
+					"        }",
+					"    }",
+					"",
+					"pm.environment.set(\"validateSchemaFunction\", validateSchema.toString())",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://212.113.100.249:8011",
+			"type": "string"
+		},
+		{
+			"key": "login",
+			"value": "test1",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "52688cfdcb07434x8b87336c7e74fcda",
+			"type": "string"
+		},
+		{
+			"key": "auth",
+			"value": "Basic dGVzdDE6NTI2ODhjZmRjYjA3NDM0eDhiODczMzZjN2U3NGZjZGE=",
+			"type": "string"
+		}
+	]
+}
